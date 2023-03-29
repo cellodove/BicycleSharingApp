@@ -14,6 +14,7 @@ object Versions{
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.9.3"
     const val NAVER_MAP = "3.16.0"
+    const val PAGING_VERSION = "3.1.1"
 
     const val JUNIT = "4.13.2"
     const val ANDROID_JUNIT = "1.1.5"
@@ -48,6 +49,8 @@ object Libraries {
     const val RETROFIT_CONVERTER_GSON    = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     const val OKHTTP_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val NAVER_MAP                  = "com.naver.maps:map-sdk:${Versions.NAVER_MAP}"
+    const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Versions.PAGING_VERSION}"
+    const val PAGING_COMMON  = "androidx.paging:paging-common:${Versions.PAGING_VERSION}"
 }
 
 object Test {
