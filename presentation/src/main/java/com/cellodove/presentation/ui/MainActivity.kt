@@ -1,7 +1,8 @@
 package com.cellodove.presentation.ui
 
-class MainActivity{
+import com.cellodove.presentation.base.BaseActivity
+import com.cellodove.presentation.databinding.ActivityMainBinding
 
-    fun wewe(){
-    }
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate){
+    override fun observeViewModel() = Unit
 }

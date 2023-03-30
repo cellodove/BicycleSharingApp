@@ -1,5 +1,4 @@
 android {
-    namespace 'com.cellodove.bicyclesharing'
     compileSdk 31
 
     defaultConfig {
