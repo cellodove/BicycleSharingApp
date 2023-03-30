@@ -1,24 +1,30 @@
 
 object Versions{
-    const val KOTLINX_COROUTINES = "1.6.1"
-    const val STDLIB ="1.7.21"
+    const val KOTLINX_COROUTINES = "1.5.0"
+    const val STDLIB ="1.6.21"
 
-    const val CORE_KTX = "1.9.0"
-    const val APP_COMPAT = "1.6.1"
+    const val CORE_KTX = "1.8.0"
+    const val APP_COMPAT = "1.4.2"
+    const val ACTIVITY_KTX = "1.4.0"
+    const val FRAGMENT_KTX = "1.4.1"
+
+    const val LIFECYCLE_KTX = "2.4.1"
 
     const val HILT = "2.35.1"
-    const val MATERIAL = "1.8.0"
-
-    const val JETPACK_NAVIGATION = "2.5.3"
+    const val MATERIAL = "1.6.1"
 
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.9.3"
-    const val NAVER_MAP = "3.16.0"
-    const val PAGING_VERSION = "3.1.1"
 
     const val JUNIT = "4.13.2"
-    const val ANDROID_JUNIT = "1.1.5"
-    const val ESPRESSO_CORE = "3.5.1"
+    const val ANDROID_JUNIT = "1.1.2"
+    const val ESPRESSO_CORE = "3.4.0"
+
+    const val GLIDE_VER = "4.12.0"
+    const val PAGING_VERSION = "3.1.1"
+
+    const val JETPACK_NAVIGATION = "2.5.3"
+    const val NAVER_MAP = "3.16.0"
 }
 
 object Kotlin {
@@ -29,6 +35,11 @@ object Kotlin {
 object AndroidX {
     const val CORE_KTX       = "androidx.core:core-ktx:${Versions.CORE_KTX}"
     const val APP_COMPAT     = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
+
+    const val ACTIVITY_KTX            = "androidx.activity:activity-ktx:${Versions.ACTIVITY_KTX}"
+    const val FRAGMENT_KTX            = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT_KTX}"
+    const val LIFECYCLE_VIEWMODEL_KTX = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE_KTX}"
+    const val LIFECYCLE_LIVEDATA_KTX  = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.LIFECYCLE_KTX}"
 }
 
 object Google {

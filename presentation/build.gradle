@@ -19,6 +19,9 @@ dependencies {
     implementation(Google.HILT_ANDROID)
     kapt (Google.HILT_ANDROID_COMPILER)
 
+    implementation(AndroidX.ACTIVITY_KTX)
+    implementation(AndroidX.FRAGMENT_KTX)
+
     implementation(Libraries.PAGING_RUNTIME)
     implementation(Libraries.PAGING_COMMON)
     implementation(Libraries.NAVER_MAP)
@@ -28,7 +31,9 @@ dependencies {
     implementation(JetpackPack.NAVIGATION_DYNAMIC)
     androidTestImplementation(JetpackPack.NAVIGATION_TEST_IMP)
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+
+    testImplementation ('junit:junit:4.13.2')
+    androidTestImplementation ('androidx.test.ext:junit:1.1.5')
+    androidTestImplementation ('androidx.test.espresso:espresso-core:3.5.1')
 }
