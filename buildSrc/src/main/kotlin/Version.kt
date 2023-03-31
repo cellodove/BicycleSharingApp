@@ -10,7 +10,7 @@ object Versions{
 
     const val LIFECYCLE_KTX = "2.4.1"
 
-    const val HILT = "2.35.1"
+    const val HILT = "2.40.5"
     const val MATERIAL = "1.6.1"
 
     const val RETROFIT = "2.9.0"
