@@ -22,7 +22,6 @@ class MainMapFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBind
             ?: MapFragment.newInstance().also {
                 fm.beginTransaction().add(R.id.mapFragment, it).commit()
             }
-
         mapFragment.getMapAsync(this)
     }
 
