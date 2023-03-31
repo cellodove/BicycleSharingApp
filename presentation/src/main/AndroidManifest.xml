@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cellodove.presentation">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +19,14 @@
         android:theme="@style/Theme.BicycleSharing"
         tools:targetApi="31">
 
+
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="gposaslhvm" />
+
         <activity
-            android:name="com.cellodove.presentation.base.BaseActivity"
+            android:name="com.cellodove.presentation.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
