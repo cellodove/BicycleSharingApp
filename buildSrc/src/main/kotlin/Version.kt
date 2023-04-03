@@ -25,6 +25,8 @@ object Versions{
 
     const val JETPACK_NAVIGATION = "2.5.3"
     const val NAVER_MAP = "3.16.0"
+    const val PLAY_SERVICES_LOCATION = "18.0.0"
+
 }
 
 object Kotlin {
@@ -60,6 +62,7 @@ object Libraries {
     const val RETROFIT_CONVERTER_GSON    = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     const val OKHTTP_LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val NAVER_MAP                  = "com.naver.maps:map-sdk:${Versions.NAVER_MAP}"
+    const val PLAY_SERVICES_LOCATION     = "com.google.android.gms:play-services-location:${Versions.PLAY_SERVICES_LOCATION}"
     const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Versions.PAGING_VERSION}"
     const val PAGING_COMMON  = "androidx.paging:paging-common:${Versions.PAGING_VERSION}"
 }
