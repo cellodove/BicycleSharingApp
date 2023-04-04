@@ -26,13 +26,12 @@ dependencies {
     implementation(Libraries.PAGING_COMMON)
     implementation(Libraries.NAVER_MAP)
     implementation(Libraries.PLAY_SERVICES_LOCATION)
+    implementation(Libraries.KONFETTI)
 
     implementation(JetpackPack.NAVIGATION_FRAGMENT)
     implementation(JetpackPack.NAVIGATION_UI)
     implementation(JetpackPack.NAVIGATION_DYNAMIC)
     androidTestImplementation(JetpackPack.NAVIGATION_TEST_IMP)
-
-
 
     testImplementation ('junit:junit:4.13.2')
     androidTestImplementation ('androidx.test.ext:junit:1.1.5')

@@ -26,6 +26,7 @@ object Versions{
     const val JETPACK_NAVIGATION = "2.5.3"
     const val NAVER_MAP = "3.16.0"
     const val PLAY_SERVICES_LOCATION = "18.0.0"
+    const val KONFETTI = "2.0.2"
 
 }
 
@@ -65,6 +66,7 @@ object Libraries {
     const val PLAY_SERVICES_LOCATION     = "com.google.android.gms:play-services-location:${Versions.PLAY_SERVICES_LOCATION}"
     const val PAGING_RUNTIME = "androidx.paging:paging-runtime:${Versions.PAGING_VERSION}"
     const val PAGING_COMMON  = "androidx.paging:paging-common:${Versions.PAGING_VERSION}"
+    const val KONFETTI       = "nl.dionsegijn:konfetti-xml:${Versions.KONFETTI}"
 }
 
 object Test {
