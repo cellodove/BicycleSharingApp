@@ -2,27 +2,26 @@ package com.cellodove.presentation.ui
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Gravity
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
+import androidx.drawerlayout.widget.DrawerLayout
 import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
 import com.cellodove.presentation.databinding.FragmentMainMapBinding
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.*
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainMapFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding::inflate),OnMapReadyCallback {
+class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding::inflate),OnMapReadyCallback {
     companion object{
         private const val LOCATION_PERMISSION_REQUEST_CODE=1004
     }
@@ -50,11 +49,16 @@ class MainMapFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBind
         super.onViewCreated(view, savedInstanceState)
 
         val fm = childFragmentManager
-        val mapFragment = fm.findFragmentById(R.id.mapFragment) as MapFragment?
+        val mapFragment = fm.findFragmentById(R.id.mapFragmentMain) as MapFragment?
             ?: MapFragment.newInstance().also {
-                fm.beginTransaction().add(R.id.mapFragment, it).commit()
+                fm.beginTransaction().add(R.id.mapFragmentMain, it).commit()
             }
         mapFragment.getMapAsync(this)
+
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        binding.floatingButton.setOnClickListener {
+            binding.drawerLayout.openDrawer(Gravity.LEFT)
+        }
     }
 
     private fun startLocationPermissionRequest() {
