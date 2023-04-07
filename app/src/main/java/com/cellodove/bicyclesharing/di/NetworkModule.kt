@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
-    private const val BASE_URL = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
+    private const val BASE_URL = "https://naveropenapi.apigw.ntruss.com"
     private const val CLIENT_ID = "gposaslhvm"
     private const val CLIENT_SECRET = "BKd62gpAk4yBkBMmrM1PL6NaeysYH6cWFupcuMmo"
 
