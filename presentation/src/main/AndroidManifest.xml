@@ -26,7 +26,7 @@
             android:value="gposaslhvm" />
 
         <activity
-            android:name="com.cellodove.presentation.ui.MainActivity"
+            android:name="com.cellodove.presentation.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

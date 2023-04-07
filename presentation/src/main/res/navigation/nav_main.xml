@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/fragment_main_map"
-        android:name="com.cellodove.presentation.ui.MainFragment"
+        android:name="com.cellodove.presentation.ui.main.MainFragment"
         tools:layout="@layout/fragment_main_map">
 
     </fragment>
