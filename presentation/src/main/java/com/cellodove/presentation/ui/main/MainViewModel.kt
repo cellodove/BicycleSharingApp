@@ -3,21 +3,23 @@ package com.cellodove.presentation.ui.main
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.usecase.FindRootUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(private val findRootUseCase : FindRootUseCase) : ViewModel() {
 
-
-
-
-
-
-
+    private val _findRootData = MutableLiveData<FindRootResponse>()
+    val findRootData : LiveData<FindRootResponse> = _findRootData
 
     fun getAddress(lat: Double, lng: Double, context : Context): String {
         val geoCoder = Geocoder(context, Locale.KOREA)
@@ -39,6 +41,12 @@ class MainViewModel @Inject constructor() : ViewModel() {
             e.printStackTrace()
         }
         return addressResult
+    }
+
+    fun getFindRoot(startPoint : String, endPoint : String){
+        viewModelScope.launch {
+            findRootUseCase.getRootData(startPoint,endPoint)
+        }
     }
 
 }

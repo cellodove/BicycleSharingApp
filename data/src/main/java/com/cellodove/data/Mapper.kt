@@ -8,7 +8,9 @@ import com.cellodove.domain.data.RouteUnitEnt
 
 fun mapperToFindRootResponse(naverDrivingResponse : NaverDrivingResponse) : FindRootResponse {
     val mapperPath = naverDrivingResponse.route.routeUnitEnt.path.toList().map {
-        Path(it.location)
+        Path(
+            Pair(it.location.latitude,it.location.longitude)
+        )
     }
     val mapperRouteUnitEnt = RouteUnitEnt(
         summary = naverDrivingResponse.route.routeUnitEnt.summary,

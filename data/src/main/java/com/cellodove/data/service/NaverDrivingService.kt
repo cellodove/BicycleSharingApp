@@ -3,11 +3,9 @@ package com.cellodove.data.service
 import com.cellodove.data.model.NaverDrivingResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface NaverDrivingService {
-    @GET("/map-direction/v1/driving?start={start}&goal={goal}")
-    suspend fun getDrivingRoot(
-        @Path("start") start : String,
-        @Path("goal") goal : String
-    ): NaverDrivingResponse
+    @GET("/map-direction/v1/driving")
+    suspend fun getDrivingRoot(@Query("start") start : String, @Query("goal") goal : String): NaverDrivingResponse
 }

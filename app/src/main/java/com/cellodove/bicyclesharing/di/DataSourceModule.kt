@@ -1,5 +1,6 @@
 package com.cellodove.bicyclesharing.di
 
+import com.cellodove.data.source.FindRootDataSource
 import com.cellodove.data.source.FindRootDataSourceImpl
 import dagger.Module
 import dagger.Provides
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 object DataSourceModule{
     @Singleton
     @Provides
-    fun providesBookRemotePagingDataSource(source: FindRootDataSourceImpl): FindRootDataSourceImpl {
+    fun providesBookRemotePagingDataSource(source: FindRootDataSourceImpl): FindRootDataSource {
         return source
     }
 }

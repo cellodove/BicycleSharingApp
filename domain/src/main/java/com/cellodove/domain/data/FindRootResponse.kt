@@ -1,7 +1,5 @@
 package com.cellodove.domain.data
 
-import com.naver.maps.geometry.LatLng
-
 data class FindRootResponse(
     val code : String,
     val messge : String,
@@ -20,5 +18,5 @@ data class RouteUnitEnt(
 )
 
 data class Path(
-    val location : LatLng
+    val location : Pair<Double,Double>
 )

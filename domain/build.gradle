@@ -11,7 +11,6 @@ java {
 dependencies {
     implementation(Kotlin.KOTLIN_STDLIB)
     implementation(Kotlin.COROUTINES_CORE)
-
     implementation 'androidx.paging:paging-common-ktx:3.1.1'
     testImplementation 'androidx.paging:paging-common:3.1.1'
 }

@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -53,6 +54,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     private val centerMarker = Marker()
     private val startMarker = Marker()
     private val endMarker = Marker()
+    private val path = PathOverlay()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,13 +77,14 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 endMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
                 endMarker.map = naverMap
 
-                val path = PathOverlay()
+
                 path.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
                 path.coords = listOf(
                     LatLng(startPoint.first, startPoint.second),
                     LatLng(endPoint.first, endPoint.second)
                 )
                 path.map = naverMap
+                viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
 
                 Log.e("kkkk","${startPoint.first},${startPoint.second},${endPoint.first},${endPoint.second}")
             }
@@ -120,7 +123,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
         // 카메라의 움직임에 대한 이벤트 리스너 인터페이스.
         naverMap.addOnCameraChangeListener { reason, animated ->
-            Log.i("NaverMap", "카메라 변경 - reson: $reason, animated: $animated")
+            //Log.i("NaverMap", "카메라 변경 - reson: $reason, animated: $animated")
             centerMarker.position = LatLng(
                 // 현재 보이는 네이버맵의 정중앙 가운데로 마커 이동
                 naverMap.cameraPosition.target.latitude,
@@ -163,7 +166,19 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         }
     }
 
-    override fun observeViewModel() {}
+    override fun observeViewModel() {
+        viewModel.findRootData.observe(viewLifecycleOwner){
+            if (it.code=="1"){
+                pinStatus = PathStep.STARTING_POINT
+                binding.btnConfirm.text = "도착지 확인"
+            }else{
+                startMarker.map = null
+                endMarker.map = null
+                path.map = null
+                Toast.makeText(requireContext(),it.messge,Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
     private val requestPermissionLauncher = registerForActivityResult(
