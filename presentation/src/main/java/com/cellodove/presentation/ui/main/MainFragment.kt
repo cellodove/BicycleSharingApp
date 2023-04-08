@@ -82,6 +82,8 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     LatLng(endPoint.first, endPoint.second)
                 )
                 path.map = naverMap
+
+                Log.e("kkkk","${startPoint.first},${startPoint.second},${endPoint.first},${endPoint.second}")
             }
         }
     }
