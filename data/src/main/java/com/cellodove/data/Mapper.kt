@@ -1,6 +1,7 @@
 package com.cellodove.data
 
 import com.cellodove.data.model.NaverDrivingResponse
+import com.cellodove.data.model.NaverSearchAddressResponse
 import com.cellodove.domain.data.*
 
 fun mapperToFindRootResponse(naverDrivingResponse : NaverDrivingResponse) : FindRootResponse {
@@ -19,5 +20,23 @@ fun mapperToFindRootResponse(naverDrivingResponse : NaverDrivingResponse) : Find
         message = naverDrivingResponse.message,
         currentDateTime = naverDrivingResponse.currentDateTime,
         route = mapperRoute
+    )
+}
+
+fun mapperToSearchAddressResponse(naverSearchAddressResponse : NaverSearchAddressResponse) : SearchAddressResponse {
+    return SearchAddressResponse(
+        status = naverSearchAddressResponse.status,
+        errorMessage = naverSearchAddressResponse.errorMessage,
+        meta = AddressMeta(
+            totalCount = naverSearchAddressResponse.meta.totalCount,
+            page = naverSearchAddressResponse.meta.page,
+            count = naverSearchAddressResponse.meta.count
+        ),
+        addresses = Addresses(
+            roadAddress = naverSearchAddressResponse.addresses.roadAddress,
+            jibunAddress = naverSearchAddressResponse.addresses.jibunAddress,
+            x = naverSearchAddressResponse.addresses.x,
+            y = naverSearchAddressResponse.addresses.y
+        )
     )
 }
