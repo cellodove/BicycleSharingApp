@@ -45,8 +45,7 @@ class MainViewModel @Inject constructor(private val findRootUseCase : FindRootUs
 
     fun getFindRoot(startPoint : String, endPoint : String){
         viewModelScope.launch {
-            findRootUseCase.getRootData(startPoint,endPoint)
+            _findRootData.value = findRootUseCase.getRootData(startPoint,endPoint)
         }
     }
-
 }

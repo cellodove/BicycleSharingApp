@@ -1,5 +1,6 @@
 package com.cellodove.data.source
 
+import android.util.Log
 import com.cellodove.data.mapperToFindRootResponse
 import com.cellodove.data.service.NaverDrivingService
 import com.cellodove.domain.data.FindRootResponse
@@ -9,16 +10,17 @@ import com.cellodove.domain.data.RouteUnitEnt
 import javax.inject.Inject
 
 interface FindRootDataSource {
-    suspend fun getRoot(latitude : String, longitude : String) : FindRootResponse
+    suspend fun getRoot(start : String, goal : String) : FindRootResponse
 }
 
 class FindRootDataSourceImpl @Inject constructor(
     private val naverDrivingService: NaverDrivingService
 ) : FindRootDataSource {
-    override suspend fun getRoot(latitude: String, longitude: String): FindRootResponse {
-        val response = naverDrivingService.getDrivingRoot(latitude, longitude)
+    override suspend fun getRoot(start: String, goal: String): FindRootResponse {
+        val response = naverDrivingService.getDrivingRoot(start, goal)
+        Log.e("kkkk","kkkk DATA: $start /// $goal")
         return if (response.code == "1"){
-            mapperToFindRootResponse(naverDrivingService.getDrivingRoot(latitude, longitude))
+            mapperToFindRootResponse(naverDrivingService.getDrivingRoot(start, goal))
         }else{
             val mapperPath = arrayListOf<Path>()
 

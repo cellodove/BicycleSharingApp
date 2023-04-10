@@ -47,8 +47,8 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     private lateinit var naverMap : NaverMap
     private lateinit var locationSource : FusedLocationSource
 
-    private var startPoint = Pair(0.0,0.0)
-    private var endPoint = Pair(0.0,0.0)
+    private var startPoint = Pair("","")
+    private var endPoint = Pair("","")
     private var pinStatus = PathStep.STARTING_POINT
 
     private val centerMarker = Marker()
@@ -68,20 +68,20 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         binding.btnConfirm.setOnClickListener {
             if (pinStatus == PathStep.STARTING_POINT){
                 pinStatus = PathStep.ENDING_POINT
-                startPoint = Pair(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
+                startPoint = Pair(String.format("%.7f",naverMap.cameraPosition.target.latitude), String.format("%.7f",naverMap.cameraPosition.target.longitude))
                 startMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
                 startMarker.map = naverMap
                 binding.btnConfirm.text = "도착지 확인"
             }else{
-                endPoint = Pair(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
+                endPoint = Pair(String.format("%.7f",naverMap.cameraPosition.target.latitude), String.format("%.7f",naverMap.cameraPosition.target.longitude))
                 endMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
                 endMarker.map = naverMap
 
 
                 path.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
                 path.coords = listOf(
-                    LatLng(startPoint.first, startPoint.second),
-                    LatLng(endPoint.first, endPoint.second)
+                    LatLng(startPoint.first.toDouble(), startPoint.second.toDouble()),
+                    LatLng(endPoint.first.toDouble(), endPoint.second.toDouble())
                 )
                 path.map = naverMap
                 viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
@@ -169,9 +169,10 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     override fun observeViewModel() {
         viewModel.findRootData.observe(viewLifecycleOwner){
             if (it.code=="1"){
-                pinStatus = PathStep.STARTING_POINT
-                binding.btnConfirm.text = "도착지 확인"
+                Toast.makeText(requireContext(),it.messge,Toast.LENGTH_SHORT).show()
             }else{
+                pinStatus = PathStep.STARTING_POINT
+                binding.btnConfirm.text = "출발지 등록"
                 startMarker.map = null
                 endMarker.map = null
                 path.map = null
