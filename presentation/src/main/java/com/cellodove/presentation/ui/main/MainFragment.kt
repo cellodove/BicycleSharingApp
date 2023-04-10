@@ -3,6 +3,7 @@ package com.cellodove.presentation.ui.main
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
@@ -40,7 +41,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         private const val LOCATION_PERMISSION_REQUEST_CODE=1004
     }
     enum class PathStep{
-        STARTING_POINT,ENDING_POINT,FINISH_POINT
+        STARTING_POINT,ENDING_POINT,FINISH_POINT,FIND_ROOT
     }
 
     private val viewModel : MainViewModel by activityViewModels()
@@ -49,44 +50,49 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
     private var startPoint = Pair(0.0,0.0)
     private var endPoint = Pair(0.0,0.0)
-    private var pinStatus = PathStep.STARTING_POINT
+    private var pathStatus = PathStep.STARTING_POINT
 
     private val centerMarker = Marker()
     private val startMarker = Marker()
     private val endMarker = Marker()
-    private val path = PathOverlay()
+    private val prePath = PathOverlay()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initMap()
         initUi()
 
-        binding.floatingButton.setOnClickListener {
-            binding.drawerLayout.openDrawer(Gravity.LEFT)
-        }
-
         binding.btnConfirm.setOnClickListener {
-            if (pinStatus == PathStep.STARTING_POINT){
-                pinStatus = PathStep.ENDING_POINT
-                startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
-                startMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
-                startMarker.map = naverMap
-                binding.btnConfirm.text = "도착지 확인"
-            }else{
-                endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
-                endMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
-                endMarker.map = naverMap
+            when(pathStatus){
+                PathStep.STARTING_POINT -> {
+                    changeUi(PathStep.ENDING_POINT)
+                    startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
+                }
+
+                PathStep.ENDING_POINT -> {
+                    changeUi(PathStep.FINISH_POINT)
+                    endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
 
 
-                path.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
-                path.coords = listOf(
-                    LatLng(startPoint.first.toDouble(), startPoint.second.toDouble()),
-                    LatLng(endPoint.first.toDouble(), endPoint.second.toDouble())
-                )
-                path.map = naverMap
-                viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
+                    prePath.coords = listOf(
+                        LatLng(startPoint.second, startPoint.first),
+                        LatLng(endPoint.second, endPoint.first)
+                    )
+                    prePath.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
+                    prePath.map = naverMap
+                }
 
-                Log.e("kkkk","${startPoint.first},${startPoint.second},${endPoint.first},${endPoint.second}")
+                PathStep.FINISH_POINT -> {
+                    changeUi(PathStep.FIND_ROOT)
+                    viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
+                }
+
+                PathStep.FIND_ROOT -> {
+
+                }
+
             }
         }
     }
@@ -101,12 +107,37 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     }
 
     private fun initUi(){
-        binding.apply {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            btnConfirm.text = "출발지 등록"
-        }
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         startMarker.icon = OverlayImage.fromResource(R.drawable.red_icon_location)
         endMarker.icon = OverlayImage.fromResource(R.drawable.blue_icon_location)
+        binding.floatingButton.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.LEFT)}
+        changeUi(pathStatus)
+    }
+
+    private fun settingMarker(marker: Marker , latLng : LatLng, naverMap : NaverMap){
+        marker.position = latLng
+        marker.map = naverMap
+    }
+
+    private fun changeUi(pathStep : PathStep){
+        pathStatus = pathStep
+        when(pathStep){
+            PathStep.STARTING_POINT -> {
+                binding.btnConfirm.text = "출발지 등록"
+            }
+
+            PathStep.ENDING_POINT -> {
+                binding.btnConfirm.text = "도착지 확인"
+            }
+
+            PathStep.FINISH_POINT -> {
+                binding.btnConfirm.text = "길 찾기"
+            }
+
+            PathStep.FIND_ROOT -> {
+                binding.btnConfirm.text = "내 주변 자전거 찾기"
+            }
+        }
     }
 
     override fun onMapReady(map: NaverMap) {
@@ -121,16 +152,11 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         centerMarker.icon = OverlayImage.fromResource(R.drawable.pin)
         centerMarker.map = naverMap
 
-        // 카메라의 움직임에 대한 이벤트 리스너 인터페이스.
         naverMap.addOnCameraChangeListener { reason, animated ->
-            //Log.i("NaverMap", "카메라 변경 - reson: $reason, animated: $animated")
             centerMarker.position = LatLng(
-                // 현재 보이는 네이버맵의 정중앙 가운데로 마커 이동
                 naverMap.cameraPosition.target.latitude,
                 naverMap.cameraPosition.target.longitude
             )
-
-            // 주소 텍스트 세팅 및 확인 버튼 비활성화
             binding.tvLocation.run {
                 text = "위치 이동 중"
                 setTextColor(ContextCompat.getColor(this.context,R.color.grey))
@@ -142,14 +168,11 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             }
         }
 
-
-        // 카메라의 움직임 종료에 대한 이벤트 리스너 인터페이스.
         naverMap.addOnCameraIdleListener {
             centerMarker.position = LatLng(
                 naverMap.cameraPosition.target.latitude,
                 naverMap.cameraPosition.target.longitude
             )
-            // 좌표 -> 주소 변환 텍스트 세팅, 버튼 활성화
             binding.tvLocation.run {
                 text = viewModel.getAddress(
                     naverMap.cameraPosition.target.latitude,
@@ -170,12 +193,24 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         viewModel.findRootData.observe(viewLifecycleOwner){
             if (it.code=="0"){
                 Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
+                prePath.map = null
+                val pathList = it.route.traoptimal
+                val findPath = PathOverlay()
+                val pathContainer : MutableList<LatLng> = mutableListOf(LatLng(0.1,0.1))
+                for(pathCords in pathList){
+                    for(pathCordsXy in pathCords.path){
+                        pathContainer.add(LatLng(pathCordsXy[1], pathCordsXy[0]))
+                    }
+                }
+                findPath.coords = pathContainer.drop(1)
+                findPath.color = Color.RED
+                findPath.map = naverMap
             }else{
-                pinStatus = PathStep.STARTING_POINT
+                pathStatus = PathStep.STARTING_POINT
                 binding.btnConfirm.text = "출발지 등록"
                 startMarker.map = null
                 endMarker.map = null
-                path.map = null
+                prePath.map = null
                 Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
             }
         }
