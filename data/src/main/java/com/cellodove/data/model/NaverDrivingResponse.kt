@@ -5,22 +5,21 @@ import com.naver.maps.geometry.LatLng
 
 data class NaverDrivingResponse(
     @SerializedName("code") val code : String,
-    @SerializedName("messge") val messge : String,
+    @SerializedName("message") val message : String,
     @SerializedName("currentDateTime") val currentDateTime : String,
     @SerializedName("route") val route : Route
 )
 
 data class Route(
-    @SerializedName("optionCode") val optionCode : String,
-    @SerializedName("RouteUnitEnt") val routeUnitEnt : RouteUnitEnt
+    @SerializedName("traoptimal") val traoptimal : List<RouteUnitEnt>
 )
 
 data class RouteUnitEnt(
-    @SerializedName("summary") val summary : String,
-    @SerializedName("path") val path : ArrayList<Path>
+    @SerializedName("summary") val summary : ResultDistance,
+    @SerializedName("path") val path : List<List<Double>>
 )
 
-data class Path(
-    @SerializedName("location") val location : LatLng
+data class ResultDistance(
+    @SerializedName("distance") val distance : String
 )
 

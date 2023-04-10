@@ -47,8 +47,8 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     private lateinit var naverMap : NaverMap
     private lateinit var locationSource : FusedLocationSource
 
-    private var startPoint = Pair("","")
-    private var endPoint = Pair("","")
+    private var startPoint = Pair(0.0,0.0)
+    private var endPoint = Pair(0.0,0.0)
     private var pinStatus = PathStep.STARTING_POINT
 
     private val centerMarker = Marker()
@@ -68,12 +68,12 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         binding.btnConfirm.setOnClickListener {
             if (pinStatus == PathStep.STARTING_POINT){
                 pinStatus = PathStep.ENDING_POINT
-                startPoint = Pair(String.format("%.7f",naverMap.cameraPosition.target.latitude), String.format("%.7f",naverMap.cameraPosition.target.longitude))
+                startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                 startMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
                 startMarker.map = naverMap
                 binding.btnConfirm.text = "도착지 확인"
             }else{
-                endPoint = Pair(String.format("%.7f",naverMap.cameraPosition.target.latitude), String.format("%.7f",naverMap.cameraPosition.target.longitude))
+                endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                 endMarker.position = LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude)
                 endMarker.map = naverMap
 
@@ -168,15 +168,15 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
     override fun observeViewModel() {
         viewModel.findRootData.observe(viewLifecycleOwner){
-            if (it.code=="1"){
-                Toast.makeText(requireContext(),it.messge,Toast.LENGTH_SHORT).show()
+            if (it.code=="0"){
+                Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
             }else{
                 pinStatus = PathStep.STARTING_POINT
                 binding.btnConfirm.text = "출발지 등록"
                 startMarker.map = null
                 endMarker.map = null
                 path.map = null
-                Toast.makeText(requireContext(),it.messge,Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
             }
         }
     }
