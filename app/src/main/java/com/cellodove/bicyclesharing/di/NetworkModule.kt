@@ -1,6 +1,6 @@
 package com.cellodove.bicyclesharing.di
 
-import com.cellodove.data.service.NaverDrivingService
+import com.cellodove.data.service.NaverService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,7 +58,7 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideDeliveryService(retrofit: Retrofit): NaverDrivingService {
-        return retrofit.create(NaverDrivingService::class.java)
+    fun provideDeliveryService(retrofit: Retrofit): NaverService {
+        return retrofit.create(NaverService::class.java)
     }
 }

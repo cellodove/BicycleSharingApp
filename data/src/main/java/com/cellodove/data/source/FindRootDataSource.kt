@@ -2,7 +2,7 @@ package com.cellodove.data.source
 
 import android.util.Log
 import com.cellodove.data.mapperToFindRootResponse
-import com.cellodove.data.service.NaverDrivingService
+import com.cellodove.data.service.NaverService
 import com.cellodove.domain.data.FindRootResponse
 import com.cellodove.domain.data.Route
 import com.cellodove.domain.data.RouteUnitEnt
@@ -13,7 +13,7 @@ interface FindRootDataSource {
 }
 
 class FindRootDataSourceImpl @Inject constructor(
-    private val naverDrivingService: NaverDrivingService
+    private val naverDrivingService: NaverService
 ) : FindRootDataSource {
     override suspend fun getRoot(start: String, goal: String): FindRootResponse {
         val response = naverDrivingService.getDrivingRoot(start, goal)

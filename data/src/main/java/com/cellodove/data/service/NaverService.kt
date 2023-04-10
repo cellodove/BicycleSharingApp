@@ -1,12 +1,11 @@
 package com.cellodove.data.service
 
-import com.cellodove.data.model.NaverAddressResponse
 import com.cellodove.data.model.NaverDrivingResponse
+import com.cellodove.data.model.NaverSearchAddressResponse
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface NaverDrivingService {
+interface NaverService {
     @GET("/map-direction/v1/driving")
     suspend fun getDrivingRoot(@Query("start", encoded = true) start : String, @Query("goal", encoded = true) goal : String): NaverDrivingResponse
 
@@ -15,5 +14,5 @@ interface NaverDrivingService {
         @Query(value = "query") query : String,
         @Query(value = "coordinate") coordinate : String,
         @Query(value = "page") page: Int,
-    ) : NaverAddressResponse
+    ) : NaverSearchAddressResponse
 }
