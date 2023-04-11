@@ -4,7 +4,7 @@ data class SearchAddressResponse(
     val status : String,
     val errorMessage : String,
     val meta : AddressMeta,
-    val addresses : Addresses,
+    val addresses : List<DomainAddresses>,
     )
 
 data class AddressMeta(
@@ -13,7 +13,7 @@ data class AddressMeta(
     val count : Int,
 )
 
-data class Addresses(
+data class DomainAddresses(
     val roadAddress : Int,
     val jibunAddress : Int,
     val x : Int,

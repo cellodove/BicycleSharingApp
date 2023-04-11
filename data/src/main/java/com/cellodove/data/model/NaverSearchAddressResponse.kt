@@ -6,7 +6,7 @@ data class NaverSearchAddressResponse(
     @SerializedName("status") val status : String,
     @SerializedName("errorMessage") val errorMessage : String,
     @SerializedName("meta") val meta : AddressMeta,
-    @SerializedName("addresses") val addresses : Addresses,
+    @SerializedName("addresses") val addresses : List<Addresses>,
 
     )
 

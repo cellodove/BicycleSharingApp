@@ -1,5 +1,6 @@
 package com.cellodove.data
 
+import com.cellodove.data.model.Addresses
 import com.cellodove.data.model.NaverDrivingResponse
 import com.cellodove.data.model.NaverSearchAddressResponse
 import com.cellodove.domain.data.*
@@ -32,11 +33,24 @@ fun mapperToSearchAddressResponse(naverSearchAddressResponse : NaverSearchAddres
             page = naverSearchAddressResponse.meta.page,
             count = naverSearchAddressResponse.meta.count
         ),
-        addresses = Addresses(
-            roadAddress = naverSearchAddressResponse.addresses.roadAddress,
-            jibunAddress = naverSearchAddressResponse.addresses.jibunAddress,
-            x = naverSearchAddressResponse.addresses.x,
-            y = naverSearchAddressResponse.addresses.y
-        )
+        addresses = naverSearchAddressResponse.addresses.map {
+            DomainAddresses(
+                roadAddress = it.roadAddress,
+                jibunAddress = it.jibunAddress,
+                x = it.x,
+                y = it.y
+            )
+        }
     )
+}
+
+fun mapperToAddress(addresses: List<Addresses>) : List<DomainAddresses> {
+    return addresses.toList().map {
+        DomainAddresses(
+            roadAddress = it.roadAddress,
+            jibunAddress = it.jibunAddress,
+            x = it.x,
+            y = it.y
+        )
+    }
 }

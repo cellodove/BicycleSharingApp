@@ -12,7 +12,6 @@ interface NaverService {
     @GET("/map-geocode/v2/geocode")
     suspend fun getAddress(
         @Query(value = "query") query : String,
-        @Query(value = "coordinate") coordinate : String,
         @Query(value = "page") page: Int,
     ) : NaverSearchAddressResponse
 }
