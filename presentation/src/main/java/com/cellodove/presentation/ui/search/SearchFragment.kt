@@ -19,6 +19,7 @@ import com.cellodove.presentation.ui.main.MainActivity.Companion.PATH_STATUS
 import com.cellodove.presentation.ui.main.MainActivity.Companion.X_VALUE
 import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.cellodove.presentation.ui.main.MainViewModel
+import com.cellodove.presentation.util.decideOnState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -93,8 +94,30 @@ class SearchFragment : BaseFragment<FragmentAddressSearchBinding>(FragmentAddres
         }
     }
 
-    override fun observeViewModel() {
+    private fun statusList() {
+        searchAdapter.addLoadStateListener { loadState ->
+            loadState.decideOnState(
+                adapter = searchAdapter,
+                showLoading = { visible ->
+                    binding.progressBar.isVisible = visible
+                    binding.searchNothing.isVisible = false
+                    binding.errorLayout.isVisible = false
+                },
+                showEmptyState = { visible ->
+                    binding.searchNothing.isVisible = visible
+                    binding.errorLayout.isVisible = false
+                },
+                showError = {
+                    binding.searchRecycler.visibility = View.INVISIBLE
+                    binding.searchNothing.isVisible = false
+                    binding.errorLayout.isVisible = true
+                }
+            )
+        }
+    }
 
+    override fun observeViewModel() {
+        statusList()
     }
 
     private fun hideKeyboard(){

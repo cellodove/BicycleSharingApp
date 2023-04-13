@@ -83,7 +83,6 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     viewModel.endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
 
-
                     prePath.coords = listOf(
                         LatLng(viewModel.startPoint.second, viewModel.startPoint.first),
                         LatLng(viewModel.endPoint.second, viewModel.endPoint.first)
@@ -102,7 +101,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 }
 
                 START_USING -> {
-                    Toast.makeText(requireContext(),"지금부터 사용 시작합니다.",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),"지금부터 사용을 시작합니다.",Toast.LENGTH_SHORT).show()
                     playKonfetti()
 
                     lifecycleScope.launch {
@@ -233,6 +232,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             changeUi(pathStatus)
             val cameraUpdate = CameraUpdate.scrollTo(LatLng(yValue,xValue ))
             naverMap.moveCamera(cameraUpdate)
+
             when(pathStatus){
                 ENDING_POINT -> {
                     viewModel.startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
