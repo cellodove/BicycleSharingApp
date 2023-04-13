@@ -11,6 +11,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.cellodove.domain.data.DomainAddresses
 import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.usecase.BicyclesLocationUseCase
 import com.cellodove.domain.usecase.FindRootUseCase
 import com.cellodove.domain.usecase.SearchAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,22 +24,24 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val findRootUseCase : FindRootUseCase,
-    private val searchAddressUseCase : SearchAddressUseCase
+    private val searchAddressUseCase : SearchAddressUseCase,
+    private val bicyclesLocationUseCase : BicyclesLocationUseCase
 ) : ViewModel() {
 
     private val _findRootData = MutableLiveData<FindRootResponse>()
     val findRootData : LiveData<FindRootResponse> = _findRootData
 
-    /*private val _searchAddressData = MutableLiveData<DomainAddresses>()
-    val searchAddressData : LiveData<DomainAddresses> = _searchAddressData*/
+    private val _getBicyclesLocationData = MutableLiveData<List<List<Double>>>()
+    val getBicyclesLocationData : LiveData<List<List<Double>>> = _getBicyclesLocationData
+
+    var startPoint = Pair(0.0,0.0)
+    var endPoint = Pair(0.0,0.0)
 
     fun getAddress(lat: Double, lng: Double, context : Context): String {
         val geoCoder = Geocoder(context, Locale.KOREA)
         val address: ArrayList<Address>
         var addressResult = "주소를 가져 올 수 없습니다."
         try {
-            //세번째 파라미터는 좌표에 대해 주소를 리턴 받는 갯수로
-            //한좌표에 대해 두개이상의 이름이 존재할수있기에 주소배열을 리턴받기 위해 최대갯수 설정
             address = geoCoder.getFromLocation(lat, lng, 1) as ArrayList<Address>
             if (address.size > 0) {
                 // 주소 받아오기
@@ -62,5 +65,9 @@ class MainViewModel @Inject constructor(
 
     fun searchAddress(query: String): Flow<PagingData<DomainAddresses>> {
         return searchAddressUseCase.getAddressPagingData(query).cachedIn(viewModelScope)
+    }
+
+    fun getBicyclesLocation(x:Double, y:Double){
+        _getBicyclesLocationData.value = bicyclesLocationUseCase.getRandomLocation(x,y)
     }
 }

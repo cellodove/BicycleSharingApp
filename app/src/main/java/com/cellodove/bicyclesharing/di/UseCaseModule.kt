@@ -1,6 +1,7 @@
 package com.cellodove.bicyclesharing.di
 
 import com.cellodove.domain.repository.MapRepository
+import com.cellodove.domain.usecase.BicyclesLocationUseCase
 import com.cellodove.domain.usecase.FindRootUseCase
 import com.cellodove.domain.usecase.SearchAddressUseCase
 import dagger.Module
@@ -18,7 +19,12 @@ class UseCaseModule {
     }
 
     @Provides
-    fun searchAddressUseCase(repository: MapRepository) : SearchAddressUseCase {
+    fun providesSearchAddressUseCase(repository: MapRepository) : SearchAddressUseCase {
         return SearchAddressUseCase(repository)
+    }
+
+    @Provides
+    fun providesBicyclesLocationUseCase() : BicyclesLocationUseCase {
+        return BicyclesLocationUseCase()
     }
 }

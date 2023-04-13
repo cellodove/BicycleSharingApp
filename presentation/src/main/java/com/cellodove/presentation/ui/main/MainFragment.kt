@@ -28,6 +28,7 @@ import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
@@ -45,15 +46,12 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     private lateinit var naverMap : NaverMap
     private lateinit var locationSource : FusedLocationSource
 
-    private var startPoint = Pair(0.0,0.0)
-    private var endPoint = Pair(0.0,0.0)
     private var pathStatus = STARTING_POINT
-    private var xValue : Double = 0.0
-    private var yValue : Double = 0.0
 
     private val centerMarker = Marker()
     private val startMarker = Marker()
     private val endMarker = Marker()
+    private val bicyclesMarkerList = arrayListOf<Marker>()
     private val prePath = PathOverlay()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,19 +65,19 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             when(pathStatus){
                 STARTING_POINT -> {
                     changeUi(ENDING_POINT)
-                    startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    viewModel.startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
                 }
 
                 ENDING_POINT -> {
                     changeUi(FINISH_POINT)
-                    endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    viewModel.endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
 
 
                     prePath.coords = listOf(
-                        LatLng(startPoint.second, startPoint.first),
-                        LatLng(endPoint.second, endPoint.first)
+                        LatLng(viewModel.startPoint.second, viewModel.startPoint.first),
+                        LatLng(viewModel.endPoint.second, viewModel.endPoint.first)
                     )
                     prePath.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
                     prePath.map = naverMap
@@ -87,19 +85,15 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
                 FINISH_POINT -> {
                     changeUi(FIND_ROOT)
-                    viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
+                    viewModel.getFindRoot("${viewModel.startPoint.first},${viewModel.startPoint.second}","${viewModel.endPoint.first},${viewModel.endPoint.second}")
                 }
 
                 FIND_ROOT -> {
-
+                    viewModel.getBicyclesLocation(naverMap.cameraPosition.target.longitude,naverMap.cameraPosition.target.latitude)
                 }
 
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     private fun initMap(){
@@ -115,6 +109,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         startMarker.icon = OverlayImage.fromResource(R.drawable.red_icon_location)
         endMarker.icon = OverlayImage.fromResource(R.drawable.blue_icon_location)
+
         binding.floatingButton.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.LEFT)}
         changeUi(pathStatus)
 
@@ -220,11 +215,12 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             naverMap.moveCamera(cameraUpdate)
             when(pathStatus){
                 ENDING_POINT -> {
-                    startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    viewModel.startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
                 }
                 FINISH_POINT -> {
-                    endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    viewModel.endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    settingMarker(startMarker, LatLng(viewModel.startPoint.second, viewModel.startPoint.first),naverMap)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
                 }
             }
@@ -254,6 +250,21 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 endMarker.map = null
                 prePath.map = null
                 Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+        viewModel.getBicyclesLocationData.observe(viewLifecycleOwner){
+            for (location in it){
+                bicyclesMarkerList.add(Marker(LatLng(location[1], location[0]), OverlayImage.fromResource(R.drawable.bicycle_icon)))
+            }
+
+            for (bicycles in bicyclesMarkerList){
+                bicycles.map = naverMap
+                bicycles.setOnClickListener {
+                    bicycles.captionText = "선택"
+                    true
+                }
             }
         }
     }
