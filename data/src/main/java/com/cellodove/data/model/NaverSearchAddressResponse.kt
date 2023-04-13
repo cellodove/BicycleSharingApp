@@ -17,8 +17,8 @@ data class AddressMeta(
 )
 
 data class Addresses(
-    @SerializedName("roadAddress") val roadAddress : Int,
-    @SerializedName("jibunAddress") val jibunAddress : Int,
-    @SerializedName("x") val x : Int,
-    @SerializedName("y") val y : Int
+    @SerializedName("roadAddress") val roadAddress : String,
+    @SerializedName("jibunAddress") val jibunAddress : String,
+    @SerializedName("x") val x : Double,
+    @SerializedName("y") val y : Double
 )

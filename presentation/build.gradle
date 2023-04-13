@@ -30,6 +30,8 @@ dependencies {
 
     implementation(JetpackPack.NAVIGATION_FRAGMENT)
     implementation(JetpackPack.NAVIGATION_UI)
+    implementation(JetpackPack.NAVIGATION_FRAGMENT_KTX)
+    implementation(JetpackPack.NAVIGATION_FRAGMENT_UI_KTX)
     implementation(JetpackPack.NAVIGATION_DYNAMIC)
     androidTestImplementation(JetpackPack.NAVIGATION_TEST_IMP)
 

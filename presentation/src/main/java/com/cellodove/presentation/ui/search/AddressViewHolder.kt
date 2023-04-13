@@ -14,8 +14,8 @@ class AddressViewHolder(private val binding : AddressListItemBinding) : Recycler
 
     private fun showData(domainAddresses: DomainAddresses){
         binding.apply {
-            roadAddress.text = domainAddresses.roadAddress.toString()
-            jibunAddress.text = domainAddresses.jibunAddress.toString()
+            roadAddress.text = domainAddresses.roadAddress
+            jibunAddress.text = domainAddresses.jibunAddress
         }
     }
 

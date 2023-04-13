@@ -54,6 +54,9 @@ object Google {
 object JetpackPack{
     const val NAVIGATION_FRAGMENT  = "androidx.navigation:navigation-fragment-ktx:${Versions.JETPACK_NAVIGATION}"
     const val NAVIGATION_UI        = "androidx.navigation:navigation-ui-ktx:${Versions.JETPACK_NAVIGATION}"
+    const val NAVIGATION_FRAGMENT_KTX = "androidx.navigation:navigation-fragment-ktx:${Versions.JETPACK_NAVIGATION}"
+    const val NAVIGATION_FRAGMENT_UI_KTX = "androidx.navigation:navigation-ui-ktx:${Versions.JETPACK_NAVIGATION}"
+
     const val NAVIGATION_DYNAMIC   = "androidx.navigation:navigation-dynamic-features-fragment:${Versions.JETPACK_NAVIGATION}"
     const val NAVIGATION_TEST_IMP  = "androidx.navigation:navigation-testing:${Versions.JETPACK_NAVIGATION}"
 }

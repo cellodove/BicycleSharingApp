@@ -37,4 +37,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
         override fun observeViewModel() = Unit
+    companion object{
+        const val PATH_STATUS = "PATH_STATUS"
+
+        const val STARTING_POINT = "STARTING_POINT"
+        const val ENDING_POINT = "ENDING_POINT"
+        const val FINISH_POINT = "FINISH_POINT"
+        const val FIND_ROOT = "FIND_ROOT"
+
+
+        const val X_VALUE = "X_VALUE"
+        const val Y_VALUE = "Y_VALUE"
+    }
 }

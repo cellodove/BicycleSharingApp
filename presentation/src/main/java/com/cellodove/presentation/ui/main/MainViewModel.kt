@@ -7,19 +7,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.cellodove.domain.data.DomainAddresses
 import com.cellodove.domain.data.FindRootResponse
 import com.cellodove.domain.usecase.FindRootUseCase
+import com.cellodove.domain.usecase.SearchAddressUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val findRootUseCase : FindRootUseCase) : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val findRootUseCase : FindRootUseCase,
+    private val searchAddressUseCase : SearchAddressUseCase
+) : ViewModel() {
 
     private val _findRootData = MutableLiveData<FindRootResponse>()
     val findRootData : LiveData<FindRootResponse> = _findRootData
+
+    /*private val _searchAddressData = MutableLiveData<DomainAddresses>()
+    val searchAddressData : LiveData<DomainAddresses> = _searchAddressData*/
 
     fun getAddress(lat: Double, lng: Double, context : Context): String {
         val geoCoder = Geocoder(context, Locale.KOREA)
@@ -47,5 +58,9 @@ class MainViewModel @Inject constructor(private val findRootUseCase : FindRootUs
         viewModelScope.launch {
             _findRootData.value = findRootUseCase.getRootData(startPoint,endPoint)
         }
+    }
+
+    fun searchAddress(query: String): Flow<PagingData<DomainAddresses>> {
+        return searchAddressUseCase.getAddressPagingData(query).cachedIn(viewModelScope)
     }
 }

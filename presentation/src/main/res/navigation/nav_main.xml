@@ -19,6 +19,15 @@
         android:id="@+id/fragment_main_map"
         android:name="com.cellodove.presentation.ui.main.MainFragment"
         tools:layout="@layout/fragment_main_map">
-
+        <action
+            android:id="@+id/openAddressSearch"
+            app:destination="@id/fragment_search_address"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/fragment_search_address"
+        android:name="com.cellodove.presentation.ui.search.SearchFragment"
+        tools:layout="@layout/fragment_address_search">
+    </fragment>
+
 </navigation>

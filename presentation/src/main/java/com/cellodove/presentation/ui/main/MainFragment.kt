@@ -4,12 +4,9 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -17,31 +14,31 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
 import com.cellodove.presentation.databinding.FragmentMainMapBinding
+import com.cellodove.presentation.ui.main.MainActivity.Companion.ENDING_POINT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.FIND_ROOT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.FINISH_POINT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.PATH_STATUS
+import com.cellodove.presentation.ui.main.MainActivity.Companion.STARTING_POINT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.X_VALUE
+import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.LocationTrackingMode
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.IOException
-import java.util.*
 
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding::inflate),OnMapReadyCallback {
     companion object{
         private const val LOCATION_PERMISSION_REQUEST_CODE=1004
-    }
-    enum class PathStep{
-        STARTING_POINT,ENDING_POINT,FINISH_POINT,FIND_ROOT
     }
 
     private val viewModel : MainViewModel by activityViewModels()
@@ -50,7 +47,9 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
     private var startPoint = Pair(0.0,0.0)
     private var endPoint = Pair(0.0,0.0)
-    private var pathStatus = PathStep.STARTING_POINT
+    private var pathStatus = STARTING_POINT
+    private var xValue : Double = 0.0
+    private var yValue : Double = 0.0
 
     private val centerMarker = Marker()
     private val startMarker = Marker()
@@ -62,16 +61,18 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         initMap()
         initUi()
 
+        pathStatus = arguments?.getString(PATH_STATUS) ?: this.pathStatus
+
         binding.btnConfirm.setOnClickListener {
             when(pathStatus){
-                PathStep.STARTING_POINT -> {
-                    changeUi(PathStep.ENDING_POINT)
+                STARTING_POINT -> {
+                    changeUi(ENDING_POINT)
                     startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
                 }
 
-                PathStep.ENDING_POINT -> {
-                    changeUi(PathStep.FINISH_POINT)
+                ENDING_POINT -> {
+                    changeUi(FINISH_POINT)
                     endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
 
@@ -84,17 +85,21 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     prePath.map = naverMap
                 }
 
-                PathStep.FINISH_POINT -> {
-                    changeUi(PathStep.FIND_ROOT)
+                FINISH_POINT -> {
+                    changeUi(FIND_ROOT)
                     viewModel.getFindRoot("${startPoint.first},${startPoint.second}","${endPoint.first},${endPoint.second}")
                 }
 
-                PathStep.FIND_ROOT -> {
+                FIND_ROOT -> {
 
                 }
 
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     private fun initMap(){
@@ -112,6 +117,12 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         endMarker.icon = OverlayImage.fromResource(R.drawable.blue_icon_location)
         binding.floatingButton.setOnClickListener { binding.drawerLayout.openDrawer(Gravity.LEFT)}
         changeUi(pathStatus)
+
+        binding.tvLocation.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putString( PATH_STATUS , pathStatus)
+            findNavController().navigate(R.id.fragment_search_address,bundle)
+        }
     }
 
     private fun settingMarker(marker: Marker , latLng : LatLng, naverMap : NaverMap){
@@ -119,22 +130,22 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         marker.map = naverMap
     }
 
-    private fun changeUi(pathStep : PathStep){
+    private fun changeUi(pathStep : String){
         pathStatus = pathStep
         when(pathStep){
-            PathStep.STARTING_POINT -> {
+            STARTING_POINT -> {
                 binding.btnConfirm.text = "출발지 등록"
             }
 
-            PathStep.ENDING_POINT -> {
+            ENDING_POINT -> {
                 binding.btnConfirm.text = "도착지 확인"
             }
 
-            PathStep.FINISH_POINT -> {
+            FINISH_POINT -> {
                 binding.btnConfirm.text = "길 찾기"
             }
 
-            PathStep.FIND_ROOT -> {
+            FIND_ROOT -> {
                 binding.btnConfirm.text = "내 주변 자전거 찾기"
             }
         }
@@ -187,6 +198,37 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 isEnabled = true
             }
         }
+
+
+
+        val xValue = arguments?.getDouble(X_VALUE)
+        val yValue = arguments?.getDouble(Y_VALUE)
+        if (xValue != null && yValue != null){
+            pathStatus = when(pathStatus){
+                STARTING_POINT -> {
+                    ENDING_POINT
+                }
+                ENDING_POINT -> {
+                    FINISH_POINT
+                }
+                else  -> {
+                    STARTING_POINT
+                }
+            }
+            changeUi(pathStatus)
+            val cameraUpdate = CameraUpdate.scrollTo(LatLng(yValue,xValue ))
+            naverMap.moveCamera(cameraUpdate)
+            when(pathStatus){
+                ENDING_POINT -> {
+                    startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
+                }
+                FINISH_POINT -> {
+                    endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
+                    settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
+                }
+            }
+        }
     }
 
     override fun observeViewModel() {
@@ -206,7 +248,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 findPath.color = Color.RED
                 findPath.map = naverMap
             }else{
-                pathStatus = PathStep.STARTING_POINT
+                pathStatus = STARTING_POINT
                 binding.btnConfirm.text = "출발지 등록"
                 startMarker.map = null
                 endMarker.map = null

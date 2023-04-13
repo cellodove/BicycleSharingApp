@@ -18,6 +18,9 @@ class SearchAdapter : PagingDataAdapter<DomainAddresses,AddressViewHolder>(ADDRE
         val item = getItem(position)
         if (item != null){
             holder.bind(item)
+            holder.itemView.setOnClickListener {
+                itemClickListener.onClick(item)
+            }
         }
     }
 

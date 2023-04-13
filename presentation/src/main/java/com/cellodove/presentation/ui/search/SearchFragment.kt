@@ -5,14 +5,19 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
 import com.cellodove.presentation.databinding.FragmentAddressSearchBinding
+import com.cellodove.presentation.ui.main.MainActivity.Companion.PATH_STATUS
+import com.cellodove.presentation.ui.main.MainActivity.Companion.X_VALUE
+import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.cellodove.presentation.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -22,7 +27,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentAddressSearchBinding>(FragmentAddressSearchBinding::inflate){
 
-    private val viewModel : SearchViewModel by activityViewModels()
+    private val viewModel : MainViewModel by activityViewModels()
     private val searchAdapter = SearchAdapter()
     private var searchJob: Job? = null
     private var oldQuery = ""
@@ -33,6 +38,8 @@ class SearchFragment : BaseFragment<FragmentAddressSearchBinding>(FragmentAddres
     }
 
     private fun initUi(){
+        val pathStatus = arguments?.getString(PATH_STATUS) ?: ""
+
         val decoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         binding.searchRecycler.adapter = searchAdapter
         binding.searchRecycler.addItemDecoration(decoration)
@@ -61,7 +68,11 @@ class SearchFragment : BaseFragment<FragmentAddressSearchBinding>(FragmentAddres
 
         searchAdapter.setItemClickListener(object : SearchAdapter.OnItemClickListener{
             override fun onClick(domainAddresses: DomainAddresses) {
-
+                val bundle = Bundle()
+                bundle.putString(PATH_STATUS , pathStatus)
+                bundle.putDouble(X_VALUE , domainAddresses.x)
+                bundle.putDouble(Y_VALUE ,domainAddresses.y)
+                findNavController().navigate(R.id.fragment_main_map,bundle)
             }
         })
 

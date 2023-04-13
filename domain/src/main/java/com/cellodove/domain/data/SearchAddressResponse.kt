@@ -14,8 +14,8 @@ data class AddressMeta(
 )
 
 data class DomainAddresses(
-    val roadAddress : Int,
-    val jibunAddress : Int,
-    val x : Int,
-    val y : Int
+    val roadAddress : String,
+    val jibunAddress :String,
+    val x : Double,
+    val y : Double
 )
