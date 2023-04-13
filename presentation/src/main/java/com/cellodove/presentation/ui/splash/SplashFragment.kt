@@ -35,26 +35,11 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        palyKonfetti()
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
             findNavController().navigate(R.id.action_splash_to_home)
         }
     }
-
-    private fun palyKonfetti() {
-        val party = Party(
-            speed = 0f,
-            maxSpeed = 30f,
-            damping = 0.9f,
-            spread = 360,
-            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
-            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100),
-            position = Position.Relative(0.5, 0.3)
-        )
-        binding.konfettiView.start(party)
-    }
-
     override fun observeViewModel() {
     }
 

@@ -44,7 +44,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         const val ENDING_POINT = "ENDING_POINT"
         const val FINISH_POINT = "FINISH_POINT"
         const val FIND_ROOT = "FIND_ROOT"
-
+        const val START_USING = "START_USING"
 
         const val X_VALUE = "X_VALUE"
         const val Y_VALUE = "Y_VALUE"

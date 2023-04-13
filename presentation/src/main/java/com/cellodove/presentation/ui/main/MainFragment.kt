@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
@@ -23,6 +24,7 @@ import com.cellodove.presentation.ui.main.MainActivity.Companion.FIND_ROOT
 import com.cellodove.presentation.ui.main.MainActivity.Companion.FINISH_POINT
 import com.cellodove.presentation.ui.main.MainActivity.Companion.PATH_STATUS
 import com.cellodove.presentation.ui.main.MainActivity.Companion.STARTING_POINT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.START_USING
 import com.cellodove.presentation.ui.main.MainActivity.Companion.X_VALUE
 import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.naver.maps.geometry.LatLng
@@ -34,12 +36,19 @@ import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.widget.LocationButtonView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding::inflate),OnMapReadyCallback {
     companion object{
         private const val LOCATION_PERMISSION_REQUEST_CODE=1004
+        private const val FINISH_DELAY = 3000L
     }
 
     private val viewModel : MainViewModel by activityViewModels()
@@ -92,6 +101,15 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     viewModel.getBicyclesLocation(naverMap.cameraPosition.target.longitude,naverMap.cameraPosition.target.latitude)
                 }
 
+                START_USING -> {
+                    Toast.makeText(requireContext(),"지금부터 사용 시작합니다.",Toast.LENGTH_SHORT).show()
+                    playKonfetti()
+
+                    lifecycleScope.launch {
+                        delay(FINISH_DELAY)
+                        requireActivity().finish()
+                    }
+                }
             }
         }
     }
@@ -143,6 +161,10 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             FIND_ROOT -> {
                 binding.btnConfirm.text = "내 주변 자전거 찾기"
             }
+
+            START_USING -> {
+                binding.btnConfirm.text = "사용 시작하기!"
+            }
         }
     }
 
@@ -193,8 +215,6 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 isEnabled = true
             }
         }
-
-
 
         val xValue = arguments?.getDouble(X_VALUE)
         val yValue = arguments?.getDouble(Y_VALUE)
@@ -259,10 +279,16 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 bicyclesMarkerList.add(Marker(LatLng(location[1], location[0]), OverlayImage.fromResource(R.drawable.bicycle_icon)))
             }
 
-            for (bicycles in bicyclesMarkerList){
-                bicycles.map = naverMap
-                bicycles.setOnClickListener {
-                    bicycles.captionText = "선택"
+            for(i: Int in 0 until bicyclesMarkerList.size){
+                bicyclesMarkerList[i].map = naverMap
+                bicyclesMarkerList[i].setOnClickListener {
+                    bicyclesMarkerList[i].captionText = "선택"
+                    for(j: Int in 0 until bicyclesMarkerList.size){
+                        if (i !=j ){
+                            bicyclesMarkerList[j].captionText = ""
+                        }
+                    }
+                    changeUi(START_USING)
                     true
                 }
             }
@@ -287,6 +313,19 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 show()
             }
         }
+    }
+
+    private fun playKonfetti() {
+        val party = Party(
+            speed = 0f,
+            maxSpeed = 30f,
+            damping = 0.9f,
+            spread = 360,
+            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100),
+            position = Position.Relative(0.5, 0.3)
+        )
+        binding.konfettiView.start(party)
     }
     private fun startLocationPermissionRequest() {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
