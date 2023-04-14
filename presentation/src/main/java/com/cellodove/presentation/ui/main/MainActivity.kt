@@ -21,29 +21,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         val navHostFragment =supportFragmentManager.findFragmentById(R.id.fragmentContainer) as NavHostFragment
         navController = navHostFragment.navController
     }
+    override fun observeViewModel() = Unit
 
-    var waitTime = 0L
-    override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.fragment_main_map) {
-            if (System.currentTimeMillis() - waitTime >= 1500) {
-                waitTime = System.currentTimeMillis()
-                Toast.makeText(this, "뒤로가기 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
-            } else {
-                finish()
-            }
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-        override fun observeViewModel() = Unit
     companion object{
         const val PATH_STATUS = "PATH_STATUS"
 
         const val STARTING_POINT = "STARTING_POINT"
         const val ENDING_POINT = "ENDING_POINT"
-        const val FINISH_POINT = "FINISH_POINT"
+
         const val FIND_ROOT = "FIND_ROOT"
+        const val FIND_BICYCLES = "FIND_BICYCLES"
         const val START_USING = "START_USING"
 
         const val X_VALUE = "X_VALUE"

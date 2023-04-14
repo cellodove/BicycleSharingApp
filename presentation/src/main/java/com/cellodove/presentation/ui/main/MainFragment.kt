@@ -2,6 +2,7 @@ package com.cellodove.presentation.ui.main
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,8 +22,8 @@ import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
 import com.cellodove.presentation.databinding.FragmentMainMapBinding
 import com.cellodove.presentation.ui.main.MainActivity.Companion.ENDING_POINT
+import com.cellodove.presentation.ui.main.MainActivity.Companion.FIND_BICYCLES
 import com.cellodove.presentation.ui.main.MainActivity.Companion.FIND_ROOT
-import com.cellodove.presentation.ui.main.MainActivity.Companion.FINISH_POINT
 import com.cellodove.presentation.ui.main.MainActivity.Companion.PATH_STATUS
 import com.cellodove.presentation.ui.main.MainActivity.Companion.STARTING_POINT
 import com.cellodove.presentation.ui.main.MainActivity.Companion.START_USING
@@ -30,7 +32,6 @@ import com.cellodove.presentation.ui.main.MainActivity.Companion.Y_VALUE
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
@@ -62,6 +63,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
     private val endMarker = Marker()
     private val bicyclesMarkerList = arrayListOf<Marker>()
     private val prePath = PathOverlay()
+    private var bicycleSelect = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,7 +81,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 }
 
                 ENDING_POINT -> {
-                    changeUi(FINISH_POINT)
+                    changeUi(FIND_ROOT)
                     viewModel.endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
 
@@ -91,22 +93,24 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     prePath.map = naverMap
                 }
 
-                FINISH_POINT -> {
-                    changeUi(FIND_ROOT)
+                FIND_ROOT -> {
                     viewModel.getFindRoot("${viewModel.startPoint.first},${viewModel.startPoint.second}","${viewModel.endPoint.first},${viewModel.endPoint.second}")
                 }
 
-                FIND_ROOT -> {
+                FIND_BICYCLES -> {
                     viewModel.getBicyclesLocation(naverMap.cameraPosition.target.longitude,naverMap.cameraPosition.target.latitude)
                 }
 
                 START_USING -> {
-                    Toast.makeText(requireContext(),"지금부터 사용을 시작합니다.",Toast.LENGTH_SHORT).show()
-                    playKonfetti()
-
-                    lifecycleScope.launch {
-                        delay(FINISH_DELAY)
-                        requireActivity().finish()
+                    if (bicycleSelect){
+                        Toast.makeText(requireContext(),"지금부터 사용을 시작합니다.",Toast.LENGTH_SHORT).show()
+                        playKonfetti()
+                        lifecycleScope.launch {
+                            delay(FINISH_DELAY)
+                            requireActivity().finish()
+                        }
+                    }else{
+                        Toast.makeText(requireContext(),"사용할 자전거를 선택해주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -153,11 +157,11 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 binding.btnConfirm.text = "도착지 확인"
             }
 
-            FINISH_POINT -> {
+            FIND_ROOT -> {
                 binding.btnConfirm.text = "길 찾기"
             }
 
-            FIND_ROOT -> {
+            FIND_BICYCLES -> {
                 binding.btnConfirm.text = "내 주변 자전거 찾기"
             }
 
@@ -223,7 +227,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     ENDING_POINT
                 }
                 ENDING_POINT -> {
-                    FINISH_POINT
+                    FIND_ROOT
                 }
                 else  -> {
                     STARTING_POINT
@@ -238,7 +242,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     viewModel.startPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(startMarker, LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
                 }
-                FINISH_POINT -> {
+                FIND_ROOT -> {
                     viewModel.endPoint = Pair(naverMap.cameraPosition.target.longitude, naverMap.cameraPosition.target.latitude)
                     settingMarker(startMarker, LatLng(viewModel.startPoint.second, viewModel.startPoint.first),naverMap)
                     settingMarker(endMarker,LatLng(naverMap.cameraPosition.target.latitude, naverMap.cameraPosition.target.longitude),naverMap)
@@ -247,13 +251,67 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        onBackPressedCallback.remove()
+    }
+
+    var waitTime = 0L
+    private var onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            when(pathStatus){
+                STARTING_POINT -> {
+                    if (System.currentTimeMillis() - waitTime >= 1500) {
+                        waitTime = System.currentTimeMillis()
+                        Toast.makeText(requireContext(), "뒤로가기 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        requireActivity().finish()
+                    }
+                }
+
+                ENDING_POINT -> {
+                    changeUi(STARTING_POINT)
+                    startMarker.map = null
+
+                }
+
+                FIND_ROOT -> {
+                    changeUi(ENDING_POINT)
+                    endMarker.map = null
+                    prePath.map = null
+                }
+
+                FIND_BICYCLES -> {
+                    changeUi(FIND_ROOT)
+                    prePath.map = naverMap
+                    findPath.map = null
+                }
+
+                START_USING -> {
+                    for(i: Int in 0 until bicyclesMarkerList.size){
+                        bicyclesMarkerList[i].map = null
+                    }
+                    bicyclesMarkerList.clear()
+                    bicycleSelect = false
+                    changeUi(FIND_BICYCLES)
+                }
+            }
+        }
+    }
+    private val findPath = PathOverlay()
     override fun observeViewModel() {
         viewModel.findRootData.observe(viewLifecycleOwner){
             if (it.code=="0"){
                 Toast.makeText(requireContext(),it.message,Toast.LENGTH_SHORT).show()
+                changeUi(START_USING)
                 prePath.map = null
                 val pathList = it.route.traoptimal
-                val findPath = PathOverlay()
+
                 val pathContainer : MutableList<LatLng> = mutableListOf(LatLng(0.1,0.1))
                 for(pathCords in pathList){
                     for(pathCordsXy in pathCords.path){
@@ -263,6 +321,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 findPath.coords = pathContainer.drop(1)
                 findPath.color = Color.RED
                 findPath.map = naverMap
+                changeUi(FIND_BICYCLES)
             }else{
                 pathStatus = STARTING_POINT
                 binding.btnConfirm.text = "출발지 등록"
@@ -283,15 +342,16 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 bicyclesMarkerList[i].map = naverMap
                 bicyclesMarkerList[i].setOnClickListener {
                     bicyclesMarkerList[i].captionText = "선택"
+                    bicycleSelect = true
                     for(j: Int in 0 until bicyclesMarkerList.size){
                         if (i !=j ){
                             bicyclesMarkerList[j].captionText = ""
                         }
                     }
-                    changeUi(START_USING)
                     true
                 }
             }
+            changeUi(START_USING)
         }
     }
 
