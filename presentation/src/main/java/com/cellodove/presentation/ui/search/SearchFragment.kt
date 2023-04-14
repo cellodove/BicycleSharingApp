@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -65,6 +66,27 @@ class SearchFragment : BaseFragment<FragmentAddressSearchBinding>(FragmentAddres
                 true
             } else {
                 false
+            }
+        }
+
+        binding.etQuery.doOnTextChanged { _, _, _, _ ->
+            binding.inputLayout.error = null
+        }
+
+        binding.inputLayout.setEndIconOnClickListener {
+            newQuery = binding.etQuery.text.toString()
+            when {
+                binding.etQuery.text.toString().isEmpty() -> {
+                    binding.inputLayout.error = "텍스트를 입력해 주세요."
+                }
+                newQuery == oldQuery -> Unit
+                else -> {
+                    oldQuery = newQuery
+                    hideKeyboard()
+                    binding.inputLayout.error = null
+                    searchAddress(binding.etQuery.text.toString())
+                    binding.searchRecycler.scrollToPosition(0)
+                }
             }
         }
 
