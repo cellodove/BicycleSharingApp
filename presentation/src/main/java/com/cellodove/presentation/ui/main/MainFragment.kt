@@ -91,6 +91,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                     )
                     prePath.color = ContextCompat.getColor(requireContext(),R.color.teal_200)
                     prePath.map = naverMap
+                    naverMap.locationTrackingMode = LocationTrackingMode.Follow
                 }
 
                 FIND_ROOT -> {
@@ -218,7 +219,10 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
                 isEnabled = true
             }
         }
+        returnAddressDataSetting()
+    }
 
+    fun returnAddressDataSetting(){
         val xValue = arguments?.getDouble(X_VALUE)
         val yValue = arguments?.getDouble(Y_VALUE)
         if (xValue != null && yValue != null){
