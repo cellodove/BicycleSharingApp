@@ -44,9 +44,7 @@ class MainViewModel @Inject constructor(
         try {
             address = geoCoder.getFromLocation(lat, lng, 1) as ArrayList<Address>
             if (address.size > 0) {
-                // 주소 받아오기
-                val currentLocationAddress = address[0].getAddressLine(0)
-                    .toString()
+                val currentLocationAddress = address[0].getAddressLine(0).toString()
                 addressResult = currentLocationAddress
 
             }

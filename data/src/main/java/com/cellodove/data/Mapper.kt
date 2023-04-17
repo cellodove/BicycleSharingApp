@@ -24,26 +24,6 @@ fun mapperToFindRootResponse(naverDrivingResponse : NaverDrivingResponse) : Find
     )
 }
 
-fun mapperToSearchAddressResponse(naverSearchAddressResponse : NaverSearchAddressResponse) : SearchAddressResponse {
-    return SearchAddressResponse(
-        status = naverSearchAddressResponse.status,
-        errorMessage = naverSearchAddressResponse.errorMessage,
-        meta = AddressMeta(
-            totalCount = naverSearchAddressResponse.meta.totalCount,
-            page = naverSearchAddressResponse.meta.page,
-            count = naverSearchAddressResponse.meta.count
-        ),
-        addresses = naverSearchAddressResponse.addresses.map {
-            DomainAddresses(
-                roadAddress = it.roadAddress,
-                jibunAddress = it.jibunAddress,
-                x = it.x,
-                y = it.y
-            )
-        }
-    )
-}
-
 fun mapperToAddress(addresses: List<Addresses>) : List<DomainAddresses> {
     return addresses.toList().map {
         DomainAddresses(

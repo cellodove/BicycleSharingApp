@@ -222,7 +222,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
         returnAddressDataSetting()
     }
 
-    fun returnAddressDataSetting(){
+    private fun returnAddressDataSetting(){
         val xValue = arguments?.getDouble(X_VALUE)
         val yValue = arguments?.getDouble(Y_VALUE)
         if (xValue != null && yValue != null){
@@ -307,6 +307,7 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
             }
         }
     }
+
     private val findPath = PathOverlay()
     override fun observeViewModel() {
         viewModel.findRootData.observe(viewLifecycleOwner){

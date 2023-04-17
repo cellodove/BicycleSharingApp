@@ -19,8 +19,6 @@
         android:theme="@style/Theme.BicycleSharing"
         tools:targetApi="31">
 
-
-
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="gposaslhvm" />
