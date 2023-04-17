@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.cellodove.data.mapperToAddress
 import com.cellodove.data.service.NaverService
-import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.domain.model.DomainAddresses
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject

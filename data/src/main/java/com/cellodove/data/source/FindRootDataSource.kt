@@ -3,9 +3,9 @@ package com.cellodove.data.source
 import android.util.Log
 import com.cellodove.data.mapperToFindRootResponse
 import com.cellodove.data.service.NaverService
-import com.cellodove.domain.data.FindRootResponse
-import com.cellodove.domain.data.Route
-import com.cellodove.domain.data.RouteUnitEnt
+import com.cellodove.domain.model.FindRootResponse
+import com.cellodove.domain.model.Route
+import com.cellodove.domain.model.RouteUnitEnt
 import javax.inject.Inject
 
 interface FindRootDataSource {

@@ -3,7 +3,7 @@ package com.cellodove.data
 import com.cellodove.data.model.Addresses
 import com.cellodove.data.model.NaverDrivingResponse
 import com.cellodove.data.model.NaverSearchAddressResponse
-import com.cellodove.domain.data.*
+import com.cellodove.domain.model.*
 
 fun mapperToFindRootResponse(naverDrivingResponse : NaverDrivingResponse) : FindRootResponse {
 

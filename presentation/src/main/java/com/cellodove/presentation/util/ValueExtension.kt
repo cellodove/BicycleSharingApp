@@ -3,7 +3,7 @@ package com.cellodove.presentation.util
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
-import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.domain.model.DomainAddresses
 import com.cellodove.presentation.ui.search.AddressViewHolder
 
 fun CombinedLoadStates.decideOnState(

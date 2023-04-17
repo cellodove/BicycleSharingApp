@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -13,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.domain.model.DomainAddresses
 import com.cellodove.presentation.R
 import com.cellodove.presentation.base.BaseFragment
 import com.cellodove.presentation.databinding.FragmentAddressSearchBinding

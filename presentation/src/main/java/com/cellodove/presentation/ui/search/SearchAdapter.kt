@@ -3,7 +3,7 @@ package com.cellodove.presentation.ui.search
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.domain.model.DomainAddresses
 
 class SearchAdapter : PagingDataAdapter<DomainAddresses,AddressViewHolder>(ADDRESS_COMPARATOR){
     private lateinit var itemClickListener : OnItemClickListener

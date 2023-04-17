@@ -1,4 +1,4 @@
-package com.cellodove.domain.data
+package com.cellodove.domain.model
 
 data class SearchAddressResponse(
     val status : String,

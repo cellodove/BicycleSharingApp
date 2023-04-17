@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.cellodove.data.source.FindRootDataSource
 import com.cellodove.data.source.SearchAddressDataSource
-import com.cellodove.domain.data.DomainAddresses
-import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.model.DomainAddresses
+import com.cellodove.domain.model.FindRootResponse
 import com.cellodove.domain.repository.MapRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

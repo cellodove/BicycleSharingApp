@@ -1,8 +1,8 @@
 package com.cellodove.domain.repository
 
 import androidx.paging.PagingData
-import com.cellodove.domain.data.DomainAddresses
-import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.model.DomainAddresses
+import com.cellodove.domain.model.FindRootResponse
 import kotlinx.coroutines.flow.Flow
 
 interface MapRepository {

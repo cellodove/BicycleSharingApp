@@ -1,6 +1,6 @@
 package com.cellodove.domain.usecase
 
-import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.model.FindRootResponse
 import com.cellodove.domain.repository.MapRepository
 
 class FindRootUseCase(private val mapRepository: MapRepository) {

@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.cellodove.domain.data.DomainAddresses
-import com.cellodove.domain.data.FindRootResponse
+import com.cellodove.domain.model.DomainAddresses
+import com.cellodove.domain.model.FindRootResponse
 import com.cellodove.domain.usecase.BicyclesLocationUseCase
 import com.cellodove.domain.usecase.FindRootUseCase
 import com.cellodove.domain.usecase.SearchAddressUseCase

@@ -3,7 +3,7 @@ package com.cellodove.presentation.ui.search
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.cellodove.domain.data.DomainAddresses
+import com.cellodove.domain.model.DomainAddresses
 import com.cellodove.presentation.databinding.AddressListItemBinding
 
 class AddressViewHolder(private val binding : AddressListItemBinding) : RecyclerView.ViewHolder(binding.root) {
