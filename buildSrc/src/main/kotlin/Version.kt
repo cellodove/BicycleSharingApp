@@ -48,6 +48,8 @@ object AndroidX {
 object Google {
     const val HILT_ANDROID          = "com.google.dagger:hilt-android:${Versions.HILT}"
     const val HILT_ANDROID_COMPILER = "com.google.dagger:hilt-android-compiler:${Versions.HILT}"
+    const val HILT_ANDROID_TEST = "com.google.dagger:hilt-android-testing:${Versions.HILT}"
+    const val HILT_ANDROID_TEST_COMPILER = "com.google.dagger:hilt-android-compiler:${Versions.HILT}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
 }
 
