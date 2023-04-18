@@ -55,7 +55,7 @@
 
 모듈별로 앱을 설명해 나가겠습니다.
 
- [image1.png](/image/image1.png)
+![image1.png](/image/image1.png)
 
 ## ****buildSrc****
 
@@ -185,7 +185,7 @@ dependencies {
 
 ## Domain 계층
 
- [image2.png](/image/image2.png)
+![image2.png](/image/image2.png)
 
 ### Model
 
@@ -308,7 +308,7 @@ class BicyclesLocationUseCase {
 
 ## Data 계층
 
- [image3.png](/image/image3.png)
+![image3.png](/image/image3.png) 
 
 ### Model
 
@@ -822,11 +822,11 @@ class MainFragment : BaseFragment<FragmentMainMapBinding>(FragmentMainMapBinding
 
 해당 프래그먼트는 네이버 맵을 호출합니다. 그리고 맵 콜백을 등록하여 네이버 맵이 준비되면 초기화를 진행해 줍니다. 내위치를 가져오기 위해서는 먼저 위치 권한을 받아야합니다. 앱 설치후 권한을 받지 않았으면 권한을 받아옵니다.
 
-![gif1.gif](/image/gif1.png)
+![gif1.gif](/image/gif1.gif)
 
 만약 권한을 거부했을경우 팝업을 띄운뒤 설정화면으로 유도합니다.
 
-![gif2.gif](/image/gif2.png)
+![gif2.gif](/image/gif2.gif)
 
 화면은 출발지, 도착지, 길찾기, 주변 자전거 찾기, 시작하기, 총 5개의 스탭으로 바뀌도록 만들었습니다.
 
@@ -1480,4 +1480,4 @@ internal object NetworkModule {
 
 실행 화면입니다.
 
-![gif3.gif](/image/gif3.png)
+![gif3.gif](/image/gif3.gif)
