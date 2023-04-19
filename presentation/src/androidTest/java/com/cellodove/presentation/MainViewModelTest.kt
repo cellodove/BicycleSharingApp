@@ -17,9 +17,8 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class MainViewModelTest {
-
-    @Mock
-    private lateinit var context : Context
+    @MockK
+    lateinit var context: Context
 
 
     lateinit var mainViewModel: MainViewModel
@@ -34,8 +33,10 @@ class MainViewModelTest {
     private lateinit var bicyclesLocationUseCase: BicyclesLocationUseCase
 
 
-    @get:Rule
-    var hiltRule = HiltAndroidRule(this)
+//    @get:Rule
+//    var hiltRule = HiltAndroidRule(this)
+
+    @Inject
 
     @Before
     fun init() {
@@ -51,7 +52,7 @@ class MainViewModelTest {
 
 
     @Test
-    fun getAddress_returnData(){
+    fun getAddress_returnData() {
         mainViewModel.getAddress(37.39575041751,127.11134823329,context)
     }
 

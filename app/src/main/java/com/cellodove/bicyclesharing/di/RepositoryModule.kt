@@ -11,12 +11,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule {
+abstract class RepositoryModule {
 
     @Singleton
-    @Provides
-    fun providesBookRepository(repository: MapRepositoryImpl): MapRepository {
-        return repository
-    }
+    @Binds
+    abstract fun bindsMapRepository(impl: MapRepositoryImpl): MapRepository
 
 }

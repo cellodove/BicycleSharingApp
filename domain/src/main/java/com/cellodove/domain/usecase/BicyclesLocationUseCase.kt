@@ -3,7 +3,12 @@ package com.cellodove.domain.usecase
 import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
 
-class BicyclesLocationUseCase {
+
+interface BicyclesLocationUseCase {
+    fun getRandomLocation(x:Double, y:Double) : List<List<Double>>
+}
+
+class BicyclesLocationUseCaseImpl @Inject constructor() : BicyclesLocationUseCase {
 
     override fun getRandomLocation(x:Double, y:Double) : List<List<Double>> {
         val xPlus = x + 0.0009

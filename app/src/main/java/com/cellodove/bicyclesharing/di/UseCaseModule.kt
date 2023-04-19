@@ -1,30 +1,30 @@
 package com.cellodove.bicyclesharing.di
 
-import com.cellodove.domain.repository.MapRepository
-import com.cellodove.domain.usecase.BicyclesLocationUseCase
-import com.cellodove.domain.usecase.FindRootUseCase
-import com.cellodove.domain.usecase.SearchAddressUseCase
+
+import com.cellodove.domain.usecase.*
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
-@Module
+
 @InstallIn(ViewModelComponent::class)
-class UseCaseModule {
+@Module
+abstract class UseCaseModule {
 
-    @Provides
-    fun providesFindRootUseCase(repository: MapRepository) : FindRootUseCase {
-        return FindRootUseCase(repository)
-    }
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsFindRootUseCase(impl: FindRootUseCaseImpl): FindRootUseCase
 
-    @Provides
-    fun providesSearchAddressUseCase(repository: MapRepository) : SearchAddressUseCase {
-        return SearchAddressUseCase(repository)
-    }
 
-    @Provides
-    fun providesBicyclesLocationUseCase() : BicyclesLocationUseCase {
-        return BicyclesLocationUseCase()
-    }
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsBicyclesLocationUseCase(impl: BicyclesLocationUseCaseImpl): BicyclesLocationUseCase
+
+
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsSearchAddressUseCase(impl: SearchAddressUseCaseImpl): SearchAddressUseCase
+
 }
