@@ -262,9 +262,14 @@ interface MapRepository {
 - FindRootUseCase
 
 ```kotlin
-class FindRootUseCase(private val mapRepository: MapRepository) {
-    suspend fun getRootData(startPoint: String, endPoint : String): FindRootResponse {
-        return mapRepository.findRoot(startPoint,endPoint)
+interface FindRootUseCase {
+    suspend fun getRootData(startPoint: String, endPoint: String): FindRootResponse
+}
+
+class FindRootUseCaseImpl @Inject constructor(private val mapRepository: MapRepository) :
+    FindRootUseCase {
+    override suspend fun getRootData(startPoint: String, endPoint: String): FindRootResponse {
+        return mapRepository.findRoot(startPoint, endPoint)
     }
 }
 ```
@@ -272,8 +277,13 @@ class FindRootUseCase(private val mapRepository: MapRepository) {
 - SearchAddressUseCase
 
 ```kotlin
-class SearchAddressUseCase(private val mapRepository: MapRepository) {
-    fun getAddressPagingData(addressQuery : String) : Flow<PagingData<DomainAddresses>> {
+interface SearchAddressUseCase {
+    fun getAddressPagingData(addressQuery: String): Flow<PagingData<DomainAddresses>>
+}
+
+class SearchAddressUseCaseImpl @Inject constructor(private val mapRepository: MapRepository) :
+    SearchAddressUseCase {
+    override fun getAddressPagingData(addressQuery: String): Flow<PagingData<DomainAddresses>> {
         return mapRepository.searchAddressPaging(addressQuery)
     }
 }
@@ -284,9 +294,13 @@ class SearchAddressUseCase(private val mapRepository: MapRepository) {
 - BicyclesLocationUseCase
 
 ```kotlin
-class BicyclesLocationUseCase {
+interface BicyclesLocationUseCase {
+    fun getRandomLocation(x:Double, y:Double) : List<List<Double>>
+}
 
-    fun getRandomLocation(x:Double, y:Double) : List<List<Double>> {
+class BicyclesLocationUseCaseImpl @Inject constructor() : BicyclesLocationUseCase {
+
+    override fun getRandomLocation(x:Double, y:Double) : List<List<Double>> {
         val xPlus = x + 0.0009
         val xMinus = x - 0.0009
         val yPlus = y + 0.0009
@@ -1369,24 +1383,22 @@ class App :Application()
 - UseCaseModule
 
 ```kotlin
-@Module
 @InstallIn(ViewModelComponent::class)
-class UseCaseModule {
+@Module
+abstract class UseCaseModule {
 
-    @Provides
-    fun providesFindRootUseCase(repository: MapRepository) : FindRootUseCase {
-        return FindRootUseCase(repository)
-    }
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsFindRootUseCase(impl: FindRootUseCaseImpl): FindRootUseCase
 
-    @Provides
-    fun providesSearchAddressUseCase(repository: MapRepository) : SearchAddressUseCase {
-        return SearchAddressUseCase(repository)
-    }
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsBicyclesLocationUseCase(impl: BicyclesLocationUseCaseImpl): BicyclesLocationUseCase
 
-    @Provides
-    fun providesBicyclesLocationUseCase() : BicyclesLocationUseCase {
-        return BicyclesLocationUseCase()
-    }
+    @ViewModelScoped
+    @Binds
+    abstract fun bindsSearchAddressUseCase(impl: SearchAddressUseCaseImpl): SearchAddressUseCase
+
 }
 ```
 
